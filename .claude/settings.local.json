@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(npm list *)",
+      "Bash(npm cache *)",
+      "Bash(npx vite *)",
+      "Bash(NODE_OPTIONS=\"--max-old-space-size=4096\" npm run dev)"
+    ]
+  }
+}
