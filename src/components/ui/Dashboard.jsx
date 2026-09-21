@@ -141,75 +141,99 @@ export function Dashboard() {
 
   // Standard Engineering UI
   return (
-    <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-5">
+    <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-2.5 sm:p-5 overflow-hidden">
 
       {/* HEADER BAR */}
-      <header className="flex flex-wrap justify-between items-start gap-3 w-full">
-        {/* Brand & Project Identity */}
-        <div className="pointer-events-auto bg-white/90 backdrop-blur-md p-3.5 rounded-2xl border border-gray-200 shadow-sm max-w-sm">
-          <h1 className="text-base font-bold tracking-tight flex items-center gap-2.5">
-            <span className="text-[#2563eb] font-bold">EDGE</span><span className="text-gray-900">•</span><span className="text-gray-900">AI WEARABLE</span>
-          </h1>
-          <p className="text-[11px] text-gray-500 mt-1 leading-relaxed">
-            Multi-Modal Sensor Fusion & Environmental Risk Prediction
-          </p>
-          <div className="mt-2 flex items-center gap-2 pt-2 border-t border-gray-100 text-[11px] font-medium">
-            <span className="text-gray-400">LIVE PREDICTION:</span>
-            <span className="font-semibold flex items-center gap-1.5" style={{ color: riskColor }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: riskColor }} />
-              {riskLevel} RISK
-            </span>
+      <header className="flex flex-col md:flex-row justify-between items-stretch md:items-start gap-2 sm:gap-3 w-full max-w-full">
+        {/* Top Row on Mobile: Brand & Quick Action Icons */}
+        <div className="flex items-center justify-between gap-2 w-full md:w-auto">
+          {/* Brand & Project Identity */}
+          <div className="pointer-events-auto bg-white/95 backdrop-blur-md px-3 py-2 sm:p-3.5 rounded-2xl border border-gray-200 shadow-sm flex-1 md:flex-initial max-w-full md:max-w-sm">
+            <div className="flex items-center justify-between gap-2">
+              <h1 className="text-xs sm:text-base font-bold tracking-tight flex items-center gap-1.5 sm:gap-2.5">
+                <span className="text-[#2563eb] font-bold">EDGE</span><span className="text-gray-900">•</span><span className="text-gray-900">AI WEARABLE</span>
+              </h1>
+              <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold" style={{ color: riskColor }}>
+                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: riskColor }} />
+                <span>{riskLevel} RISK</span>
+              </div>
+            </div>
+            <p className="text-[10px] sm:text-[11px] text-gray-500 mt-0.5 leading-tight hidden sm:block">
+              Multi-Modal Sensor Fusion & Environmental Risk Prediction
+            </p>
+          </div>
+
+          {/* Quick SOS & Language Buttons on Mobile Top Right */}
+          <div className="flex items-center gap-1.5 pointer-events-auto md:hidden shrink-0">
+            <button
+              onClick={toggleLanguage}
+              className="flex items-center justify-center w-8 h-8 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-all shadow-sm"
+              title="Switch language"
+            >
+              <Globe className="w-3.5 h-3.5 text-[#2563eb]" />
+            </button>
+            <button
+              onClick={sosState.active ? cancelSOS : triggerSOS}
+              className={`flex items-center justify-center px-2 h-8 rounded-xl text-xs font-bold transition-all shadow-sm ${sosState.active
+                  ? 'bg-red-600 text-white animate-pulse'
+                  : 'bg-red-50 text-red-600 border border-red-200'
+                }`}
+            >
+              <PhoneCall className="w-3.5 h-3.5" />
+              <span className="ml-1 text-[10px]">{sosState.active ? 'SOS' : 'SOS'}</span>
+            </button>
           </div>
         </div>
 
         {/* ISOLATION MODE NOTIFICATION & BACK TO ASSEMBLY BUTTON */}
         {selectedComponentId && (
-          <div className="pointer-events-auto flex items-center gap-3 bg-white/95 backdrop-blur-xl px-3.5 py-2.5 rounded-2xl border border-gray-200 shadow-sm">
+          <div className="pointer-events-auto flex items-center justify-between gap-2 bg-white/95 backdrop-blur-xl px-2.5 py-1.5 rounded-2xl border border-gray-200 shadow-sm w-full md:w-auto">
             <button
               onClick={() => backToAssembly()}
-              className="flex items-center gap-2 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl text-xs tracking-wide transition-all shadow-sm"
+              className="flex items-center gap-1 px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl text-[11px] tracking-wide transition-all shadow-sm shrink-0"
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span>BACK TO ASSEMBLY</span>
+              <ArrowLeft className="w-3 h-3" />
+              <span>BACK</span>
             </button>
-            <div className="px-3 py-0.5 flex flex-col justify-center border-l border-gray-100 text-xs">
-              <span className="text-[9px] uppercase tracking-widest text-gray-400 font-semibold">
-                {isComponentIsolated ? 'ISOLATED INSPECTION' : 'IN-ASSEMBLY VIEW'}
+            <div className="px-2 py-0.5 flex flex-col justify-center border-l border-gray-100 text-xs overflow-hidden">
+              <span className="text-[8px] uppercase tracking-widest text-gray-400 font-semibold truncate">
+                {isComponentIsolated ? 'ISOLATED' : 'IN ASSEMBLY'}
               </span>
-              <span className="text-gray-700 font-semibold text-xs whitespace-nowrap">
+              <span className="text-gray-700 font-semibold text-[10px] truncate">
                 {COMPONENTS[selectedComponentId]?.name}
               </span>
             </div>
             <button
               onClick={() => setIsComponentIsolated(!isComponentIsolated)}
-              title={isComponentIsolated ? 'Show inside full watch assembly' : 'Isolate component only'}
-              className="px-2.5 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-600 border border-gray-200 text-[10px] font-medium transition-all whitespace-nowrap"
+              className="px-2 py-1 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-600 border border-gray-200 text-[9px] font-medium transition-all shrink-0"
             >
-              {isComponentIsolated ? 'IN ASSEMBLY' : 'ISOLATE'}
+              {isComponentIsolated ? 'ASSEMBLY' : 'ISOLATE'}
             </button>
           </div>
         )}
 
-        {/* Primary Tabs, Component Explorer & Presentation Trigger */}
-        <div className="flex items-center gap-2 pointer-events-auto">
+        {/* Primary Tabs, Component Explorer & Action Controls */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 pointer-events-auto w-full md:w-auto overflow-hidden">
           {/* Component Explorer Quick Dropdown */}
-          <div className="relative">
+          <div className="relative w-full sm:w-auto shrink-0">
             <button
               onClick={() => setIsComponentMenuOpen(!isComponentMenuOpen)}
-              className="flex items-center gap-2 px-3.5 py-2 bg-white hover:bg-gray-50 text-gray-700 rounded-xl border border-gray-200 text-xs font-medium tracking-wide transition-all shadow-sm whitespace-nowrap"
+              className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 px-3 py-1.5 bg-white hover:bg-gray-50 text-gray-700 rounded-xl border border-gray-200 text-[11px] sm:text-xs font-medium tracking-wide transition-all shadow-sm"
             >
-              <Box className="w-3.5 h-3.5 text-[#2563eb]" />
-              <span className="font-medium text-xs whitespace-nowrap">
-                {selectedComponentId ? COMPONENTS[selectedComponentId]?.name : 'EXPLORE COMPONENTS'}
-              </span>
-              <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform ${isComponentMenuOpen ? 'rotate-180' : ''}`} />
+              <div className="flex items-center gap-1.5 overflow-hidden">
+                <Box className="w-3.5 h-3.5 text-[#2563eb] shrink-0" />
+                <span className="font-medium truncate">
+                  {selectedComponentId ? COMPONENTS[selectedComponentId]?.name : 'EXPLORE COMPONENTS'}
+                </span>
+              </div>
+              <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform shrink-0 ${isComponentMenuOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {isComponentMenuOpen && (
-              <div className="absolute left-0 mt-2 w-[420px] max-h-[320px] overflow-y-auto bg-white/98 backdrop-blur-2xl border border-gray-200 rounded-2xl p-3 shadow-xl z-50 flex flex-col gap-1.5 text-xs font-medium text-gray-700">
+              <div className="fixed sm:absolute left-2 right-2 sm:left-0 sm:right-auto mt-2 w-auto sm:w-[400px] max-h-[60vh] sm:max-h-[340px] overflow-y-auto bg-white/98 backdrop-blur-2xl border border-gray-200 rounded-2xl p-2.5 shadow-2xl z-50 flex flex-col gap-1 text-xs font-medium text-gray-700">
                 <div className="px-3 py-1.5 text-[10px] text-gray-400 font-semibold uppercase tracking-wider border-b border-gray-100 flex justify-between items-center">
-                  <span>SELECT COMPONENT</span>
-                  <span className="text-[#2563eb] font-semibold">360° INSPECTION</span>
+                  <span>SELECT COMPONENT FOR 3D VIEW</span>
+                  <button onClick={() => setIsComponentMenuOpen(false)} className="text-gray-400 hover:text-gray-700 p-0.5 sm:hidden">✕</button>
                 </div>
 
                 {selectedComponentId && (
@@ -218,9 +242,9 @@ export function Dashboard() {
                       backToAssembly()
                       setIsComponentMenuOpen(false)
                     }}
-                    className="flex items-center gap-2.5 text-left px-3.5 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-[#2563eb] font-medium my-1 transition-all"
+                    className="flex items-center gap-2 text-left px-3 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-[#2563eb] font-medium my-0.5 transition-all text-xs"
                   >
-                    <ArrowLeft className="w-4 h-4" />
+                    <ArrowLeft className="w-3.5 h-3.5" />
                     <span>← RETURN TO FULL ASSEMBLY</span>
                   </button>
                 )}
@@ -234,14 +258,13 @@ export function Dashboard() {
                         setSelectedComponentId(comp.id)
                         setIsComponentMenuOpen(false)
                       }}
-                      className={`flex flex-col text-left px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${
-                        isSel
+                      className={`flex flex-col text-left px-3 py-2 rounded-xl transition-all cursor-pointer ${isSel
                           ? 'bg-blue-50 text-[#2563eb] border border-blue-200 font-semibold'
                           : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent'
-                      }`}
+                        }`}
                     >
-                      <span className="font-semibold text-[13px] leading-snug text-gray-900">{comp.name}</span>
-                      <span className="text-[10px] text-blue-500 font-medium mt-0.5 flex items-center gap-2">
+                      <span className="font-semibold text-xs text-gray-900">{comp.name}</span>
+                      <span className="text-[9px] text-blue-500 font-medium mt-0.5 flex items-center gap-1.5">
                         <span>{comp.category}</span>
                         <span className="text-gray-300">•</span>
                         <span className="text-gray-400">{comp.interface}</span>
@@ -253,7 +276,8 @@ export function Dashboard() {
             )}
           </div>
 
-          <nav className="flex flex-wrap gap-1 bg-white/90 backdrop-blur-xl p-1.5 rounded-xl border border-gray-200 shadow-sm max-w-full overflow-x-auto">
+          {/* Primary Navigation Tabs - Horizontal Touch Scrollable Pill Bar */}
+          <nav className="flex items-center gap-1 bg-white/95 backdrop-blur-xl p-1 rounded-xl border border-gray-200 shadow-sm w-full md:w-auto overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap shrink">
             {PRIMARY_TABS.map((tab) => {
               const isActive = activeTab === tab.id
               return (
@@ -265,11 +289,10 @@ export function Dashboard() {
                       setSelectedComponentId(null)
                     }
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium tracking-wide rounded-lg transition-all ${
-                    isActive
+                  className={`flex items-center gap-1 px-2.5 py-1.5 text-[11px] sm:text-xs font-medium tracking-wide rounded-lg transition-all shrink-0 ${isActive
                       ? 'bg-blue-50 text-[#2563eb] border border-blue-200 font-semibold'
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50 border border-transparent'
-                  }`}
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 border border-transparent'
+                    }`}
                 >
                   {tab.label}
                 </button>
@@ -277,172 +300,158 @@ export function Dashboard() {
             })}
           </nav>
 
-          {/* Language Switcher */}
-          <button
-            onClick={toggleLanguage}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 rounded-xl text-xs font-bold tracking-wide transition-all shadow-sm"
-            title="Switch language (English / हिन्दी)"
-          >
-            <Globe className="w-3.5 h-3.5 text-[#2563eb]" />
-            <span>{language === 'en' ? 'हिन्दी' : 'English'}</span>
-          </button>
+          {/* Action Buttons Bar on Desktop / Tablet */}
+          <div className="hidden md:flex items-center gap-1.5 shrink-0">
+            {/* Language Switcher */}
+            <button
+              onClick={toggleLanguage}
+              className="flex items-center gap-1 px-2.5 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 rounded-xl text-xs font-bold tracking-wide transition-all shadow-sm"
+              title="Switch language (English / हिन्दी)"
+            >
+              <Globe className="w-3.5 h-3.5 text-[#2563eb]" />
+              <span>{language === 'en' ? 'हिन्दी' : 'English'}</span>
+            </button>
 
-          {/* Quick SOS Trigger Button */}
-          <button
-            onClick={sosState.active ? cancelSOS : triggerSOS}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold tracking-wide transition-all shadow-sm ${
-              sosState.active
-                ? 'bg-red-600 text-white animate-pulse'
-                : 'bg-red-50 hover:bg-red-100 text-red-600 border border-red-200'
-            }`}
-            title="Trigger Emergency SOS"
-          >
-            <PhoneCall className="w-3.5 h-3.5" />
-            <span>{sosState.active ? 'SOS ACTIVE' : 'SOS'}</span>
-          </button>
+            {/* Quick SOS Trigger Button */}
+            <button
+              onClick={sosState.active ? cancelSOS : triggerSOS}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold tracking-wide transition-all shadow-sm ${sosState.active
+                  ? 'bg-red-600 text-white animate-pulse'
+                  : 'bg-red-50 hover:bg-red-100 text-red-600 border border-red-200'
+                }`}
+            >
+              <PhoneCall className="w-3.5 h-3.5" />
+              <span>{sosState.active ? 'SOS ACTIVE' : 'SOS'}</span>
+            </button>
 
-          <button
-            onClick={() => setPresentationMode(true)}
-            className="flex items-center gap-2 px-3 py-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 rounded-xl text-xs font-medium tracking-wide transition-all shadow-sm"
-          >
-            <PlaySquare className="w-4 h-4 text-[#2563eb]" /> PRESENT
-          </button>
+            <button
+              onClick={() => setPresentationMode(true)}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 rounded-xl text-xs font-medium tracking-wide transition-all shadow-sm"
+            >
+              <PlaySquare className="w-3.5 h-3.5 text-[#2563eb]" /> PRESENT
+            </button>
 
-          {/* Direct Download ZIP Button */}
-          <a
-            href="/edge-ai-wearable-prototype.zip"
-            download="edge-ai-wearable-prototype.zip"
-            className="flex items-center gap-2 px-3 py-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 rounded-xl text-xs font-medium tracking-wide transition-all shadow-sm"
-            title="Download Complete Project ZIP"
-          >
-            <Download className="w-4 h-4 text-green-600" />
-            <span>ZIP</span>
-          </a>
+            {/* Direct Download ZIP Button */}
+            <a
+              href="/edge-ai-wearable-prototype.zip"
+              download="edge-ai-wearable-prototype.zip"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 rounded-xl text-xs font-medium tracking-wide transition-all shadow-sm"
+              title="Download Complete Project ZIP"
+            >
+              <Download className="w-3.5 h-3.5 text-green-600" />
+              <span>ZIP</span>
+            </a>
+          </div>
         </div>
       </header>
 
       {/* BOTTOM CONTROLS BAR */}
-      <footer className="pointer-events-auto flex flex-wrap justify-between items-end gap-3 w-full">
-        {/* Physical View Perspective Modes */}
-        <div className="flex flex-col gap-1.5">
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 pl-1">
-            Inspection Modes
-          </span>
-          <div className="flex flex-wrap gap-1.5 bg-white/90 backdrop-blur-xl p-1.5 rounded-xl border border-gray-200 shadow-sm max-w-full overflow-x-auto">
-            {VIEW_MODES.map(mode => {
-              const isActive = viewMode === mode.id
-              return (
-                <button
-                  key={mode.id}
-                  onClick={() => {
-                    setViewMode(mode.id)
-                    if (mode.id === 'SKIN_CONTACT') setSelectedComponentId('MAX30102')
-                    else if (mode.id === 'AIRFLOW') setSelectedComponentId('BME280')
-                    else setSelectedComponentId(null)
-                  }}
-                  className={`px-3 py-2 text-xs font-medium tracking-wide rounded-lg transition-all ${
-                    isActive
-                      ? 'bg-blue-600 text-white font-semibold shadow-sm'
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  {mode.label}
-                </button>
-              )
-            })}
+      <footer className="pointer-events-auto flex flex-col md:flex-row justify-between items-stretch md:items-end gap-2 w-full max-w-full overflow-hidden pb-1 md:pb-0">
+        {/* Physical View Perspective Modes & 360 Controls Container */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2 max-w-full overflow-hidden">
+          {/* Inspection Modes */}
+          <div className="flex flex-col gap-1 max-w-full">
+            <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-widest text-gray-400 pl-1">
+              Inspection Modes
+            </span>
+            <div className="flex items-center gap-1 bg-white/95 backdrop-blur-xl p-1 rounded-xl border border-gray-200 shadow-sm max-w-full overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap">
+              {VIEW_MODES.map(mode => {
+                const isActive = viewMode === mode.id
+                return (
+                  <button
+                    key={mode.id}
+                    onClick={() => {
+                      setViewMode(mode.id)
+                      if (mode.id === 'SKIN_CONTACT') setSelectedComponentId('MAX30102')
+                      else if (mode.id === 'AIRFLOW') setSelectedComponentId('BME280')
+                      else setSelectedComponentId(null)
+                    }}
+                    className={`px-2.5 py-1.5 text-[11px] font-medium tracking-wide rounded-lg transition-all shrink-0 ${isActive
+                        ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                      }`}
+                  >
+                    {mode.label}
+                  </button>
+                )
+              })}
+            </div>
           </div>
-        </div>
 
-        {/* FLOATING 360° CAMERA & ZOOM NAVIGATION BAR */}
-        <div className="flex flex-col items-center gap-1.5">
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">
-            360° Orbit & Zoom
-          </span>
-          <div className="flex items-center gap-1.5 bg-white/92 backdrop-blur-xl p-1.5 rounded-xl border border-gray-200 shadow-sm">
-            {/* Camera Angle Presets */}
-            {CAMERA_PRESETS.map((preset) => {
-              const isActive = cameraPreset === preset.id
-              return (
-                <button
-                  key={preset.id}
-                  onClick={() => setCameraPreset(preset.id)}
-                  className={`px-2.5 py-1.5 text-[11px] font-medium tracking-wide rounded-lg transition-all ${
-                    isActive
-                      ? 'bg-blue-600 text-white font-semibold shadow-sm'
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+          {/* FLOATING 360° CAMERA & ZOOM NAVIGATION BAR */}
+          <div className="flex flex-col gap-1 max-w-full">
+            <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-widest text-gray-400 pl-1">
+              360° Orbit & Zoom
+            </span>
+            <div className="flex items-center gap-1 bg-white/95 backdrop-blur-xl p-1 rounded-xl border border-gray-200 shadow-sm max-w-full overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap">
+              {/* Camera Angle Presets */}
+              {CAMERA_PRESETS.map((preset) => {
+                const isActive = cameraPreset === preset.id
+                return (
+                  <button
+                    key={preset.id}
+                    onClick={() => setCameraPreset(preset.id)}
+                    className={`px-2 py-1 text-[10px] sm:text-[11px] font-medium tracking-wide rounded-lg transition-all shrink-0 ${isActive
+                        ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                      }`}
+                  >
+                    {preset.label}
+                  </button>
+                )
+              })}
+
+              <div className="w-[1px] h-4 bg-gray-200 mx-0.5 shrink-0" />
+
+              {/* Smooth Zoom Controls */}
+              <button
+                onClick={() => triggerZoom(1)}
+                title="Zoom In"
+                className="p-1 text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all shrink-0"
+              >
+                <ZoomIn className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => triggerZoom(-1)}
+                title="Zoom Out"
+                className="p-1 text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all shrink-0"
+              >
+                <ZoomOut className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => resetView()}
+                title="Reset 45° View"
+                className="p-1 text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all shrink-0"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+
+              <div className="w-[1px] h-4 bg-gray-200 mx-0.5 shrink-0" />
+
+              {/* 360 Turntable Auto-Spin Toggle */}
+              <button
+                onClick={() => toggleAutoRotate()}
+                className={`flex items-center gap-1 px-2 py-1 text-[10px] font-bold rounded-lg border transition-all shrink-0 ${autoRotate
+                    ? 'bg-blue-50 text-[#2563eb] border-blue-300'
+                    : 'text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-900'
                   }`}
-                >
-                  {preset.label}
-                </button>
-              )
-            })}
+              >
+                <RotateCw className={`w-3 h-3 ${autoRotate ? 'animate-spin' : ''}`} />
+                <span>SPIN</span>
+              </button>
 
-            <div className="w-[1px] h-5 bg-gray-200 mx-1" />
-
-            {/* Smooth Zoom Controls */}
-            <button
-              onClick={() => triggerZoom(1)}
-              title="Zoom In"
-              className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
-            >
-              <ZoomIn className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => triggerZoom(-1)}
-              title="Zoom Out"
-              className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
-            >
-              <ZoomOut className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => resetView()}
-              title="Reset 45° View"
-              className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-            </button>
-
-            <div className="w-[1px] h-5 bg-gray-200 mx-1" />
-
-            {/* 360 Turntable Auto-Spin Toggle */}
-            <button
-              onClick={() => toggleAutoRotate()}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-bold rounded-lg border transition-all ${
-                autoRotate
-                  ? 'bg-blue-50 text-[#2563eb] border-blue-300'
-                  : 'text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-900'
-              }`}
-            >
-              <RotateCw className={`w-3.5 h-3.5 ${autoRotate ? 'animate-spin' : ''}`} />
-              <span>SPIN</span>
-            </button>
-
-            {/* Ghost Mode Toggle */}
-            <button
-              onClick={() => toggleGhostMode()}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-bold rounded-lg border transition-all ${
-                ghostMode
-                  ? 'bg-purple-50 text-purple-700 border-purple-300'
-                  : 'text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-900'
-              }`}
-            >
-              <Ghost className="w-3.5 h-3.5" />
-              <span>GHOST: {ghostMode ? 'ON' : 'OFF'}</span>
-            </button>
-
-            {/* Direct Back to Assembly action */}
-            {selectedComponentId && (
-              <>
-                <div className="w-[1px] h-5 bg-gray-200 mx-1" />
-                <button
-                  onClick={() => backToAssembly()}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-[11px] rounded-lg shadow-sm transition-all"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>BACK</span>
-                </button>
-              </>
-            )}
+              {/* Ghost Mode Toggle */}
+              <button
+                onClick={() => toggleGhostMode()}
+                className={`flex items-center gap-1 px-2 py-1 text-[10px] font-bold rounded-lg border transition-all shrink-0 ${ghostMode
+                    ? 'bg-purple-50 text-purple-700 border-purple-300'
+                    : 'text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-900'
+                  }`}
+              >
+                <Ghost className="w-3 h-3" />
+                <span>GHOST: {ghostMode ? 'ON' : 'OFF'}</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -453,14 +462,13 @@ export function Dashboard() {
             setAiCoreClicked(next)
             if (next) setActiveTab('AI_CORE')
           }}
-          className={`flex items-center gap-2.5 px-5 py-2.5 rounded-xl border text-xs font-medium tracking-wider transition-all duration-300 ${
-            isAiCoreClicked || activeTab === 'AI_CORE' || activeTab === 'SENSOR_FUSION'
-              ? 'bg-blue-50 border-blue-300 text-[#2563eb] shadow-sm'
-              : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900'
-          }`}
+          className={`flex items-center justify-center gap-2 px-4 py-2 rounded-xl border text-xs font-semibold tracking-wider transition-all duration-300 shrink-0 ${isAiCoreClicked || activeTab === 'AI_CORE' || activeTab === 'SENSOR_FUSION'
+              ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+              : 'bg-white/95 backdrop-blur-xl border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-600 shadow-sm'
+            }`}
         >
-          <span className={`w-2 h-2 rounded-full ${(isAiCoreClicked || activeTab === 'AI_CORE') ? 'animate-pulse' : ''}`} style={{ backgroundColor: (isAiCoreClicked || activeTab === 'AI_CORE') ? '#2563eb' : '#9ca3af' }} />
-          {(isAiCoreClicked || activeTab === 'AI_CORE') ? 'AI ACTIVE' : 'ACTIVATE AI'}
+          <span className={`w-2 h-2 rounded-full ${(isAiCoreClicked || activeTab === 'AI_CORE') ? 'animate-pulse bg-white' : 'bg-blue-600'}`} />
+          <span>{(isAiCoreClicked || activeTab === 'AI_CORE') ? 'AI ACTIVE' : 'ACTIVATE AI'}</span>
         </button>
       </footer>
 
